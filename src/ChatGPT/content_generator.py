@@ -8,7 +8,7 @@ class EmailContentGenerator:
             "Name": "Vicky",
             "Title": "Developer",
             "Email Address": "contact@wikkie.com",
-            "Contact Number ": "9876543210"
+            "Contact Number ": "987643210"
         },
         "company": {
             "Company Name": "Axe",
@@ -19,7 +19,7 @@ class EmailContentGenerator:
     def generate(self,client_data):
         print("\n[LOG] - GENERATING CONTENT USING CHATGPT\n")
         try:
-            response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": f"""
+            response = openai.ChatCompletion.create(model="gpt-3.-turbo", messages=[{"role": "user", "content": f"""
                             Create a personalized lead email content to reach out to the client company and return the response as JSON Formatted [
                                 "subject":"  ",
                                 "content": " " ]
@@ -32,7 +32,7 @@ class EmailContentGenerator:
                                 {self.__data["user"]}
                             ]
 
-                            *Use less \n\n in between the para and the 3-5 length paragraph is perferable*
+                            *Use less \n\n in between the para and the 3- length paragraph is perferable*
         """}])
             content = json.loads(response["choices"][0]["message"]["content"]) 
             print("\n[LOG] - CONTENT READY\n")

@@ -3,19 +3,27 @@ from WebScrapper.scrapper import Scrappers
 from Configs.selenium_config import driver
 from EmailController.personalized_email_sender import Emails 
 
-
-
 def main():
-    print("\n<=== MENU ===>\n1 - EXTRACT DATASET\n2 - SHOW DATASET\n3 - TRANSFER DATASET TO SHEET\n4 - GENERATE AND SEND PERSONALIZED EMAILS\n5 - PRODUCTION MODE (It'll do All 4 steps)\n0 - Exit the script \n<=== END ===>\n")
+    print("\n<=== MENU ===>\n1 - EXTRACT DATASET\n2 - SHOW DATASET\n3 - TRANSFER DATASET TO SHEET\n4 - GENERATE AND SEND EMAILS\n5 - PRODUCTION MODE\n0 - Exit the script \n<=== END ===>\n")
     emails = Emails()
     scrapper = Scrappers()
     store = Store()
-    mode = int(input())
+    
+    mode_input = input("Enter choice: ")
+    if not mode_input.strip().isdigit():
+        print("Invalid input")
+        main()
+        return
+        
+    mode = int(mode_input)
 
     try:
         if mode == 0:
             print("\n<== Terminated ==>\n")
-            driver.close()
+            try:
+                driver.quit()
+            except:
+                pass
         elif mode == 1:
             print("\n<== EXTRACTION STARTED ==>\n")
 
@@ -60,7 +68,7 @@ def main():
             
             emails.send()
             
-            mode()
+            main()
             print("<== PRODUCTION MODE - FINISHED ==>")
         else:
             print("<== DEVELOPMENT MODE - STARTED ==>")
@@ -70,6 +78,8 @@ def main():
             print("<== DEVELOPMENT MODE - FINISHED ==>")
             main()
     except Exception as error:
-        print(error)
+        print(f"Error: {error}")
+        main()
 
-main()
+if __name__ == "__main__":
+    main()
