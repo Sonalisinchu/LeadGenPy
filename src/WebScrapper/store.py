@@ -25,36 +25,42 @@ class Store:
         try:
             df = pd.DataFrame(data)
 
-            # Heuristic Scoring Function
+            # AI Heuristic Scoring Function (Web Dev & CRM Agency - Growth Targeting)
             def calculate_score(row):
                 score = 0
                 
-                # 1. Website Presence (No web -> +20, Has web -> +5)
+                # 1. Digital Infrastructure (Biggest Opportunity)
+                # If they have NO website, they are invisible online = massive target.
                 has_web = str(row.get('Website', 'null')).strip().lower() != 'null'
-                score += 5 if has_web else 20
+                score += 10 if has_web else 40
                 
-                # 2. Automation Level (Assume None -> +20)
-                score += 20
-                
-                # 3. Engagement Level (based on reviews)
+                # 2. Traffic & Footfall (Targeting Struggling Businesses)
+                # Low reviews = They need CRM & Web services to grow their productivity!
                 try:
                     revs = int(str(row.get('ReviewCount', '0')).replace(',', ''))
                 except:
                     revs = 0
                     
-                if revs > 100:
-                    eng = 'High'
-                    score += 15
-                elif revs > 20:
-                    eng = 'Medium'
+                if revs == 0 or revs <= 20:
+                    eng = 'Low Traffic (Needs Help)'
+                    score += 30
+                elif revs <= 50:
+                    eng = 'Medium Traffic (Growing)'
+                    score += 20
+                elif revs <= 150:
+                    eng = 'High Traffic'
                     score += 10
                 else:
-                    eng = 'Low'
-                    score += 5
+                    eng = 'Established'
+                    score += 0
                     
-                # 4. Social Presence (Assume Low -> +10)
-                score += 10
+                # 3. Contactability (Can we sell to them?)
+                has_email = str(row.get('email', 'null')).strip().lower() != 'null'
+                score += 15 if has_email else 0
                 
+                has_phone = str(row.get('PhoneNumber', 'null')).strip().lower() != 'null'
+                score += 15 if has_phone else 0
+                    
                 return pd.Series([score, eng])
 
             # Apply scoring
@@ -78,18 +84,22 @@ class Store:
             cols = [c for c in df.columns if c not in ['lead_score', 'lead_category']]
             df = df[cols + ['lead_score', 'lead_category']]
 
-            desktop_xlsx = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop", "leads_with_scores.xlsx")
+            import time
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            excel_filename = f"leads_with_scores_{timestamp}.xlsx"
+            
+            desktop_xlsx = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop", excel_filename)
             desktop_db = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop", "crm_leads.db")
 
             # Save Excel
             df.to_excel(desktop_xlsx, index=False)
-            print(f"\n[LOG] - ✅ Excel saved to Desktop: leads_with_scores.xlsx")
+            print(f"\n[LOG] - ✅ Excel saved to Desktop: {excel_filename}")
             
             # Save SQLite
             conn = sqlite3.connect(desktop_db)
-            df.to_sql('leads_scored', conn, if_exists='replace', index=False)
+            df.to_sql('leads_scored', conn, if_exists='append', index=False)
             conn.close()
-            print(f"[LOG] - ✅ SQLite Data saved: crm_leads.db\n")
+            print(f"[LOG] - ✅ SQLite Data appended to: crm_leads.db\n")
             
         except Exception as e:
             print(f"\n[LOG] - Scoring & Export failed: {e}\n")

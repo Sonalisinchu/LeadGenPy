@@ -4,7 +4,7 @@ from Configs.selenium_config import driver
 from EmailController.personalized_email_sender import Emails 
 
 def main():
-    print("\n<=== MENU ===>\n1 - EXTRACT DATASET\n2 - SHOW DATASET\n3 - TRANSFER DATASET TO SHEET\n4 - GENERATE AND SEND EMAILS\n5 - PRODUCTION MODE\n0 - Exit the script \n<=== END ===>\n")
+    print("\n<=== MENU ===>\n1 - EXTRACT DATASET\n2 - SHOW DATASET\n3 - GENERATE AND SEND EMAILS\n4 - PRODUCTION MODE\n0 - Exit the script \n<=== END ===>\n")
     emails = Emails()
     scrapper = Scrappers()
     store = Store()
@@ -41,18 +41,13 @@ def main():
             print("\n<== EXTRACTED DATASET ==>\n")
             main()
         elif mode == 3:
-            print("\n<== TRANSFERING ==>\n")
-            store.append_all_data_to_sheet()
-            print("\n<== TRANSFER COMPLETED ==>\n")
-            main()
-        elif mode == 4:
             print("\n<== GENERATE PERSONALIZED MAILS ==>\n")
             
             emails.send()
             
             print("\n<== FINISHED SENDING PERSONALIZED MAILS ==>\n")
             main()
-        elif mode == 5:
+        elif mode == 4:
             print("<== PRODUCTION MODE - STARTED ==>")
             
             business_name = input("Enter the Business name: ")
@@ -60,9 +55,6 @@ def main():
             scrapper.scrape(business_name, location)
             
             print("\n DATASET LOADED")
-            print("\n TRANSFERING DATASET")
-            
-            store.append_all_data_to_sheet()
             
             print("\n SENDING PERSONALIZED EMAILS")
             

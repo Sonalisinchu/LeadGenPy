@@ -31,7 +31,7 @@ class Scrappers:
                 end_elements = driver.find_elements(
                     By.XPATH, "//span[contains(text(), \"You've reached the end\")]"
                 )
-                if end_elements or count > 25:
+                if end_elements or count > 100:
                     break
 
             print("\n[LOG] - ITEMS LOADED\n")
@@ -47,7 +47,7 @@ class Scrappers:
 
             print("\n[LOG] - EXTRACTING DATA \n")
             for link in links:
-                if count == 25:
+                if count == 100:
                     break
                 driver.get(link)
                 print(f"\n[LOG] - VISITING : {link[0:25]}... \n")
